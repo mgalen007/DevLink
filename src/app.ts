@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import helmet from "helmet"
 import morgan from "morgan"
+import messagesRouter from "./modules/messages/messages.routes"
 
 // Express instance
 const app = express()
@@ -19,6 +20,9 @@ app.get("/health-check", (_req, res) => {
         name: "DevLink API"
     })
 })
+
+// Mount routers
+app.use("/api/messages", messagesRouter)
 
 // Export the instance
 export default app
