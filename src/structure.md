@@ -92,7 +92,7 @@
 
 * Unique identifier
 * Sender (user reference)
-* Receiver (user reference)
+* Recipient (user reference)
 * Content
 * Created timestamp
 
