@@ -1,7 +1,8 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { MessageService } from "./messages.service"
 import { type CreateMessageDto, type UpdateMessageDto } from "./messages.dto"
 import { type IMessage } from "./messages.types"
+import { AppError } from "../../middleware/error.middleware"
 
 
 export class MessageController { 
@@ -9,7 +10,8 @@ export class MessageController {
 
     create = async (
         req: Request<{}, {}, CreateMessageDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const newMessage = await this.service.create(req.body)
@@ -17,60 +19,50 @@ export class MessageController {
                 message: newMessage
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't create message"
-            })
+            next(err)
         }
     }
 
     findAll = async (
         _req: Request,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const messages: IMessage[] = await this.service.findAll()
             if (messages.length == 0) {
-                return void res.status(200).json({
-                    error: "No messages recorded yet"
-                })
+                throw new AppError("No messages recorded yet", 200)
             }
             res.status(200).json({
                 messages
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't fetch messages"
-            })
+            next(err)
         }
     }
 
     findOne = async (
         req: Request<{ id: string }>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const message = await this.service.findOne(req.params.id)
             if (!message) {
-                return void res.status(404).json({
-                    error: "Message not found"
-                })
+                throw new AppError("Message not found", 404)
             }
             res.status(200).json({
                 message
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't find message"
-            })
+            next(err)
         }
     }
 
     update = async (
         req: Request<{ id: string }, {}, UpdateMessageDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const newMessage = await this.service.update(
@@ -81,25 +73,20 @@ export class MessageController {
                 message: newMessage
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't update message"
-            })
+            next(err)
         }
     }
 
     remove = async (
         req: Request<{ id: string }>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             await this.service.remove(req.params.id)
             res.status(204).end()
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Coudln't delete message"
-            })
+            next(err)
         }
     }
 }

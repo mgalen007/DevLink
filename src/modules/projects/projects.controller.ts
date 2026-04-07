@@ -1,13 +1,15 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { ProjectService } from "./projects.service"
 import { CreateProjectDto, UpdateProjectDto } from "./projects.dto"
+import { AppError } from "../../middleware/error.middleware"
 
 export class ProjectController {
     private service = new ProjectService()
 
     create = async (
         req: Request<{}, {}, CreateProjectDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const newProject = await this.service.create(req.body)
@@ -15,71 +17,59 @@ export class ProjectController {
                 project: newProject
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't create project"
-            })
+            next(err)
         }
     }
 
     findAll = async (
         _req: Request,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const projects = await this.service.findAll()
             if (projects.length == 0) {
-                return void res.status(200).json({
-                    message: "No recorded projects yet"
-                })
+                throw new AppError("No projects recorded yet", 200)
             }
             res.status(200).json({ projects })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't fetch projects"
-            })
+            next(err)
         }
     }
 
     findOne = async (
         req: Request<{ id: string }>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const project = await this.service.findOne(req.params.id)
             if (!project) {
-                return void res.status(404).json({
-                    error: "Project not found"
-                })
+                throw new AppError("Project not found", 404)
             }
             res.status(200).json({ project })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't fetch project"
-            })
+            next(err)
         }
     }
 
     remove = async (
         req: Request<{ id: string }>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const project = await this.service.remove(req.params.id)
             res.status(204).end()
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't delete project"
-            })
+            next(err)
         }
     }
 
     update = async (
         req: Request<{ id: string }, {}, UpdateProjectDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const newProject = await this.service.update(
@@ -90,10 +80,7 @@ export class ProjectController {
                 project: newProject
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't update project"
-            })
+            next(err)
         }
     }
 }
