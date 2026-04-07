@@ -8,6 +8,7 @@ import projectsRouter from "./modules/projects/projects.routes"
 import applicationsRouter from "./modules/applications/applications.routes"
 import authRouter from "./modules/auth/auth.routes"
 import authMiddleware from "./middleware/auth.middleware"
+import errorMiddleware from "./middleware/error.middleware"
 
 // Express instance
 const app = express()
@@ -32,6 +33,9 @@ app.use("/api/users", authMiddleware, usersRouter)
 app.use("/api/projects", authMiddleware, projectsRouter)
 app.use("/api/applications", authMiddleware, applicationsRouter)
 app.use("/api/auth", authRouter)
+
+// Error middleware
+app.use(errorMiddleware)
 
 // Export the instance
 export default app
