@@ -3,12 +3,12 @@ import { IMessage } from "./messages.types"
 
 
 export class MessageService {
-    async create(message: IMessage) {
+    create = async (message: IMessage) => {
         const newMessage = await Message.create(message)
         return message
     }
 
-    async update(id: string, message: Partial<IMessage>) {
+    update = async (id: string, message: Partial<IMessage>) => {
         const newMessage = await Message.findOneAndUpdate(
             { _id: id },
             message,
@@ -17,18 +17,18 @@ export class MessageService {
         return newMessage
     }
 
-    async findAll() {
+    findAll = async () => {
         const messages = await Message.find()
         return messages
     }
 
-    async findOne(id: string) {
+    findOne = async (id: string) => {
         const message = await Message.findOne({ _id: id })
         return message
     }
 
-    async remove(id: string) {
+    remove = async (id: string) => {
         const message = await Message.findOneAndDelete({ _id: id })
-        return
+        return message
     }
 }
