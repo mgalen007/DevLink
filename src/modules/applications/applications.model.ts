@@ -19,3 +19,5 @@ const appSchema = new Schema<IApplication>({
 }, { timestamps: true })
 
 const Application = model<IApplication>("Application", appSchema)
+
+export default Application
