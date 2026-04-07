@@ -1,4 +1,13 @@
-import { type IApplication } from "./applications.types"
+import { z } from "zod"
 
-export interface CreateAppDto extends IApplication {}
-export type UpdateAppDto = Partial<IApplication>
+export const createAppSchema = z.object({
+    project: z.string(),
+    status: z.enum(["pending", "accepted", "rejected"])
+})
+export const updateAppSchema = z.object({
+    project: z.string().optional(),
+    status: z.enum(["pending", "accepted", "rejected"]).optional()
+})
+
+export type CreateAppDto = z.infer<typeof createAppSchema>
+export type UpdateAppDto = z.infer<typeof updateAppSchema>

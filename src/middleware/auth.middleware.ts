@@ -5,7 +5,7 @@ import { AppError } from "./error.middleware"
 
 dotenv.config();
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload;
 }
 

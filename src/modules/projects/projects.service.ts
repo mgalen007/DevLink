@@ -1,9 +1,10 @@
 import Project from "./projects.model"
 import { type CreateProjectDto, UpdateProjectDto } from "./projects.dto"
+import { Types } from "mongoose"
 
 export class ProjectService {
-    create = async (project: CreateProjectDto) => {
-        const newProject = await Project.create(project)
+    create = async (project: CreateProjectDto, owner: Types.ObjectId) => {
+        const newProject = await Project.create({ owner, ...project })
         return newProject
     }
 
