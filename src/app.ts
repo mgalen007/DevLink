@@ -6,6 +6,7 @@ import messagesRouter from "./modules/messages/messages.routes"
 import usersRouter from "./modules/users/users.routes"
 import projectsRouter from "./modules/projects/projects.routes"
 import applicationsRouter from "./modules/applications/applications.routes"
+import authRouter from "./modules/auth/auth.routes"
 
 // Express instance
 const app = express()
@@ -29,6 +30,7 @@ app.use("/api/messages", messagesRouter)
 app.use("/api/users", usersRouter)
 app.use("/api/projects", projectsRouter)
 app.use("/api/applications", applicationsRouter)
+app.use("/api/auth", authRouter)
 
 // Export the instance
 export default app
