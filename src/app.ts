@@ -3,6 +3,7 @@ import cors from "cors"
 import helmet from "helmet"
 import morgan from "morgan"
 import messagesRouter from "./modules/messages/messages.routes"
+import usersRouter from "./modules/users/users.routes"
 
 // Express instance
 const app = express()
@@ -23,6 +24,7 @@ app.get("/health-check", (_req, res) => {
 
 // Mount routers
 app.use("/api/messages", messagesRouter)
+app.use("/api/users", usersRouter)
 
 // Export the instance
 export default app
