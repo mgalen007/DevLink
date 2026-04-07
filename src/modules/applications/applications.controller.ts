@@ -1,48 +1,44 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { ApplicationService } from "./applications.service"
 import { type CreateAppDto, type UpdateAppDto } from "./applications.dto"
+import { AppError } from "../../middleware/error.middleware"
 
 export class ApplicationController {
     private service = new ApplicationService
 
     create = async (
         req: Request<{}, {}, CreateAppDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const application = await this.service.create(req.body)
             res.status(201).json({ application })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't create application"
-            })
+            next(err)
         }
     }
 
     findAll = async (
         req: Request<{}, {}, {}, { projectId: string }>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const applications = await this.service.findAll(req.query.projectId)
             if (applications.length == 0) {
-                return void res.status(200).json({
-                    message: "No applications recorded for this project"
-                })
+                throw new AppError("No applications recorded for this project", 200)
             }
             res.status(200).json({ applications })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't fetch applications"
-            })
+            next(err)
         }
     }
 
     update = async (
         req: Request<{ id: string }, {}, UpdateAppDto>,
-        res: Response
+        res: Response,
+        next: NextFunction
     ) => {
         try {
             const newApplication = await this.service.update(
@@ -53,10 +49,7 @@ export class ApplicationController {
                 application: newApplication
             })
         } catch(err) {
-            console.log(err)
-            res.status(500).json({
-                error: "Couldn't update application"
-            })
+            next(err)
         }
     }
 }

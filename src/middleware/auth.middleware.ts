@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { AppError } from "./error.middleware"
 
 dotenv.config();
 
@@ -16,9 +17,7 @@ const auth = (
   try {
     const token = req.headers.authorization?.split(" ")[1]
     if (!token) {
-        return void res.status(401).json({
-            error: "No token provided"
-        })
+        throw new AppError("No token provided", 401)
     }
     const decoded = jwt.verify(
         token,
@@ -33,9 +32,7 @@ const auth = (
         error: "Invalid token",
         })
     } 
-    res.status(500).json({
-        error: "An error occured during authentication, try again later"
-    })
+    next(err)
   }
 };
 
