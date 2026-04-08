@@ -4,7 +4,7 @@ import { Types } from "mongoose"
 
 export class MessageService {
     create = async (message: CreateMessageDto, sender: Types.ObjectId) => {
-        const newMessage = await Message.create(message)
+        const newMessage = await Message.create({ sender, ...message })
         return newMessage
     }
 
