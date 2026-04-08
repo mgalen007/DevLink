@@ -2,17 +2,18 @@ import { Request, Response, NextFunction } from "express"
 import { ProjectService } from "./projects.service"
 import { CreateProjectDto, UpdateProjectDto } from "./projects.dto"
 import { AppError } from "../../middleware/error.middleware"
+import { type AuthenticatedRequest } from "../../middleware/auth.middleware"
 
 export class ProjectController {
     private service = new ProjectService()
 
     create = async (
-        req: Request<{}, {}, CreateProjectDto>,
+        req: AuthenticatedRequest,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            const newProject = await this.service.create(req.body)
+            const newProject = await this.service.create(req.body, req.user!.id)
             res.status(201).json({
                 project: newProject
             })

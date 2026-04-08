@@ -2,17 +2,18 @@ import { Request, Response, NextFunction } from "express"
 import { ApplicationService } from "./applications.service"
 import { type CreateAppDto, type UpdateAppDto } from "./applications.dto"
 import { AppError } from "../../middleware/error.middleware"
+import { type AuthenticatedRequest } from "../../middleware/auth.middleware"
 
 export class ApplicationController {
     private service = new ApplicationService
 
     create = async (
-        req: Request<{}, {}, CreateAppDto>,
+        req: AuthenticatedRequest,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            const application = await this.service.create(req.body)
+            const application = await this.service.create(req.body, req.user!.id)
             res.status(201).json({ application })
         } catch(err) {
             next(err)

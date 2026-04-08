@@ -1,14 +1,14 @@
 import Message from "./messages.model"
-import { IMessage } from "./messages.types"
-
+import { type CreateMessageDto, type UpdateMessageDto } from "./messages.dto"
+import { Types } from "mongoose"
 
 export class MessageService {
-    create = async (message: IMessage) => {
-        const newMessage = await Message.create(message)
-        return message
+    create = async (message: CreateMessageDto, sender: Types.ObjectId) => {
+        const newMessage = await Message.create({ sender, ...message })
+        return newMessage
     }
 
-    update = async (id: string, message: Partial<IMessage>) => {
+    update = async (id: string, message: UpdateMessageDto) => {
         const newMessage = await Message.findOneAndUpdate(
             { _id: id },
             message,

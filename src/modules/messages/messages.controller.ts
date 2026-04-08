@@ -3,18 +3,18 @@ import { MessageService } from "./messages.service"
 import { type CreateMessageDto, type UpdateMessageDto } from "./messages.dto"
 import { type IMessage } from "./messages.types"
 import { AppError } from "../../middleware/error.middleware"
-
+import { type AuthenticatedRequest } from "../../middleware/auth.middleware"
 
 export class MessageController { 
     private service = new MessageService()
 
     create = async (
-        req: Request<{}, {}, CreateMessageDto>,
+        req: AuthenticatedRequest,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            const newMessage = await this.service.create(req.body)
+            const newMessage = await this.service.create(req.body, req.user!.id)
             res.status(201).json({
                 message: newMessage
             })

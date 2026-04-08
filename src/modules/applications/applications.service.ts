@@ -1,9 +1,10 @@
 import Application from "./applications.model"
 import { type CreateAppDto, type UpdateAppDto } from "./applications.dto"
+import { Types } from "mongoose"
 
 export class ApplicationService {
-    create = async (application: CreateAppDto) => {
-        const newApplication = await Application.create(application)
+    create = async (application: CreateAppDto, applicant: Types.ObjectId) => {
+        const newApplication = await Application.create({ applicant, ...application })
         return newApplication
     }
 
